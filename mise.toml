@@ -1,0 +1,132 @@
+# mise task catalogue for kings_college_galway
+#
+# Convention (post the 2026-08-19-domain-driven-mise-task-catalog-v1
+# change in cianfhoghlaim):
+#   - Top-level `core`, `core:ci`, `data`, `devops`, `ml`, `web` omnibus tasks
+#     for "I'm working on X" daily commands
+#   - Domain-scoped subcommands (`kcg:dlt:*`, `kcg:baml:*`, `kcg:cocoindex:*`)
+#     for surgical control when you know exactly what you want
+#
+# Per openspec/changes/kcg-university-of-galway-doc-processing-v1/
+
+[env]
+PYTHONPATH = "{{ config_root }}/dlt_sources:{{ config_root }}/baml_src:{{ config_root }}/cocoindex_flows"
+
+# ---------------------------------------------------------------------------
+# 1. Core — dev env
+# ---------------------------------------------------------------------------
+
+[tasks.core]
+description = "Dev env: sync deps + lint + test + format"
+run = [
+  "uv sync --all-extras",
+  "uv run ruff check dlt_sources baml_src cocoindex_flows scripts",
+  "uv run mypy dlt_sources baml_src cocoindex_flows",
+  "uv run pytest tests/ -v",
+]
+
+[tasks."core:ci"]
+description = "The canonical CI gate (lint + openspec:validate-all + smoke_test)"
+run = [
+  "uv run ruff check dlt_sources baml_src cocoindex_flows scripts",
+  "openspec validate --all --strict",
+  "python3 scripts/smoke_test.py",
+]
+
+# ---------------------------------------------------------------------------
+# 2. kcg:dlt — University of Galway public-document DLT sources
+# ---------------------------------------------------------------------------
+
+[tasks."kcg:dlt:sync-academic-calendar"]
+description = "Sync the UoG academic calendar + key dates (1 DLT resource)"
+run = "python3 -m dlt_sources.uog.academic_calendar"
+
+[tasks."kcg:dlt:sync-course-catalog"]
+description = "Sync the UoG public course catalog (1 DLT resource)"
+run = "python3 -m dlt_sources.uog.course_catalog"
+
+[tasks."kcg:dlt:sync-governance-minutes"]
+description = "Sync the UoG University Council + Academic Council minutes (1 DLT resource)"
+run = "python3 -m dlt_sources.uog.university_council_minutes"
+
+[tasks."kcg:dlt:sync-press-releases"]
+description = "Sync the UoG press releases + news archive (1 DLT resource)"
+run = "python3 -m dlt_sources.uog.press_releases"
+
+[tasks."kcg:dlt:sync-research-outputs"]
+description = "Sync the UoG research publications + theses (1 DLT resource)"
+run = "python3 -m dlt_sources.uog.research_outputs"
+
+[tasks."kcg:dlt:sync-all"]
+description = "Sync all 5 UoG DLT sources in sequence"
+run = [
+  "mise run kcg:dlt:sync-academic-calendar",
+  "mise run kcg:dlt:sync-course-catalog",
+  "mise run kcg:dlt:sync-governance-minutes",
+  "mise run kcg:dlt:sync-press-releases",
+  "mise run kcg:dlt:sync-research-outputs",
+]
+
+# ---------------------------------------------------------------------------
+# 3. kcg:baml — BAML extraction
+# ---------------------------------------------------------------------------
+
+[tasks."kcg:baml:extract-courses"]
+description = "BAML-extract CourseOutline rows from the public course catalog"
+run = "python3 -m scripts.bulk_extract_courses"
+
+[tasks."kcg:baml:extract-calendar"]
+description = "BAML-extract AcademicCalendarEvent rows from the academic calendar"
+run = "python3 -m scripts.bulk_extract_calendar"
+
+[tasks."kcg:baml:extract-minutes"]
+description = "BAML-extract GovernanceMinute rows from the council minutes"
+run = "python3 -m scripts.bulk_extract_minutes"
+
+[tasks."kcg:baml:extract-press"]
+description = "BAML-extract PressRelease rows from the news archive"
+run = "python3 -m scripts.bulk_extract_press"
+
+[tasks."kcg:baml:extract-all"]
+description = "BAML-extract all 4 UoG document types"
+run = [
+  "mise run kcg:baml:extract-courses",
+  "mise run kcg:baml:extract-calendar",
+  "mise run kcg:baml:extract-minutes",
+  "mise run kcg:baml:extract-press",
+]
+
+# ---------------------------------------------------------------------------
+# 4. kcg:cocoindex — CocoIndex embedding flows
+# ---------------------------------------------------------------------------
+
+[tasks."kcg:cocoindex:embed-courses"]
+description = "Embed CourseOutline rows into LanceDB table uog_courses"
+run = "python3 -m cocoindex_flows.uog.courses_flow"
+
+[tasks."kcg:cocoindex:embed-governance"]
+description = "Embed GovernanceMinute rows into LanceDB table uog_governance_minutes"
+run = "python3 -m cocoindex_flows.uog.governance_flow"
+
+[tasks."kcg:cocoindex:embed-all"]
+description = "Embed all 2 CocoIndex flows"
+run = [
+  "mise run kcg:cocoindex:embed-courses",
+  "mise run kcg:cocoindex:embed-governance",
+]
+
+# ---------------------------------------------------------------------------
+# 5. Cross-cutting — OSINT allowlist + openspec validation
+# ---------------------------------------------------------------------------
+
+[tasks."kcg:lint:osint-allowlist"]
+description = "Verify every DLT source URL is in the OSINT allowlist (per LICENSE.md)"
+run = "python3 scripts/lint_osint_allowlist.py"
+
+[tasks."openspec:validate"]
+description = "Run openspec validate --strict on every pending change"
+run = "openspec validate --all --strict"
+
+[tasks."kcg:smoke-test"]
+description = "End-to-end smoke test (every DLT source imports + every BAML class loads + every CocoIndex flow constructs)"
+run = "python3 scripts/smoke_test.py"

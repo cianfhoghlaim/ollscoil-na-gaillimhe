@@ -1,0 +1,38 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+
+# Virtualenvs
+.venv/
+venv/
+
+# Distribution / build
+dist/
+build/
+*.egg-info/
+
+# OS / editor
+.DS_Store
+*.swp
+*.swo
+
+# Marimo cache (do NOT commit)
+notebooks/__marimo__/
+
+# DLT pipeline state (do NOT commit)
+stedding/ingest_queue/
+stedding/lancedb/
+stedding/site_scrape_samples/
+stedding/huggingface/        # 87MB+ of model cache; NEVER commit
+
+# OSINT allowlist is NOT in .gitignore (it's the canonical licence surface)
+
+# BAML generated client (run `baml-cli generate` to produce)
+baml_client/
+
+# CocoIndex state
+.cocoindex/

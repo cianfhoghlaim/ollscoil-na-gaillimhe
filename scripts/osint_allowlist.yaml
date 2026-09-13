@@ -1,0 +1,79 @@
+# KCG OSINT allowlist — every URL a KCG DLT source scrapes MUST be
+# in this file. Mirrors the `dlt_sources/cianchosaint/common/osint_allowlist.yaml`
+# convention from cianchosaint but scoped to the University of Galway
+# public-surface scope.
+
+version: 1
+category: kcg_osint_allowlist
+description: Canonical OSINT allowlist for kings_college_galway. Every DLT source URL must appear here or scripts/lint_osint_allowlist.py exits 1. Every entry MUST reference a University of Galway public surface (per LICENSE.md).
+
+entries:
+- url: "https://www.universityofgalway.ie/academic-calendar/"
+  category: academic_calendar
+  body: "University of Galway Academic Calendar"
+  jurisdiction: "ie_galway"
+  surface_id: "academic_calendar"
+  note: "The canonical academic calendar — teaching weeks, exam periods, public holidays, university closures"
+
+- url: "https://www.universityofgalway.ie/courses/"
+  category: course_catalog
+  body: "University of Galway Public Course Catalog"
+  jurisdiction: "ie_galway"
+  surface_id: "course_catalog"
+  note: "Public course catalog (undergraduate + postgraduate + microcredentials)"
+
+- url: "https://www.universityofgalway.ie/governance/"
+  category: governance
+  body: "University of Galway Governance Pages"
+  jurisdiction: "ie_galway"
+  surface_id: "university_council_minutes"
+  note: "Public governance — University Council + Academic Council + Údarás na hOllscoile + committees"
+
+- url: "https://www.universityofgalway.ie/governance/academic-council/"
+  category: governance
+  body: "University of Galway Academic Council Minutes"
+  jurisdiction: "ie_galway"
+  surface_id: "university_council_minutes"
+  note: "Academic Council minutes (subset of the governance index)"
+
+- url: "https://www.universityofgalway.ie/governance/university-council/"
+  category: governance
+  body: "University of Galway University Council Minutes"
+  jurisdiction: "ie_galway"
+  surface_id: "university_council_minutes"
+  note: "University Council minutes (subset of the governance index)"
+
+- url: "https://www.universityofgalway.ie/governance/udarás/"
+  category: governance
+  body: "University of Galway Údarás na hOllscoile (Governing Authority) Minutes"
+  jurisdiction: "ie_galway"
+  surface_id: "university_council_minutes"
+  note: "Governing Authority minutes (subset of the governance index)"
+
+- url: "https://www.universityofgalway.ie/news/"
+  category: press_releases
+  body: "University of Galway News + Press Releases"
+  jurisdiction: "ie_galway"
+  surface_id: "press_releases"
+  note: "Public news + press releases (English + Irish)"
+
+- url: "https://www.universityofgalway.ie/research/"
+  category: research
+  body: "University of Galway Research Outputs"
+  jurisdiction: "ie_galway"
+  surface_id: "research_outputs"
+  note: "Public research publication catalog + theses (ARAN repository index)"
+
+- url: "https://aran.library.universityofgalway.ie/handle/10379/12345"
+  category: research
+  body: "University of Galway ARAN Repository"
+  jurisdiction: "ie_galway"
+  surface_id: "research_outputs"
+  note: "ARAN is the UoG institutional repository; sample URL for the canonical record"
+
+- url: "https://doi.org/10.1234/uog.2025.cs.001"
+  category: research
+  body: "Sample DOI for UoG research output (placeholder for testing — replace with real DOIs at scrape time)"
+  jurisdiction: "ie_galway"
+  surface_id: "research_outputs"
+  note: "DOI is a universal scientific identifier; the doi.org host is on the OSINT allowlist because UoG publications use it. Replace with real DOIs at production scrape time."

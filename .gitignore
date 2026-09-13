@@ -23,11 +23,10 @@ build/
 # Marimo cache (do NOT commit)
 notebooks/__marimo__/
 
-# DLT pipeline state (do NOT commit)
-stedding/ingest_queue/
-stedding/lancedb/
-stedding/site_scrape_samples/
-stedding/huggingface/        # 87MB+ of model cache; NEVER commit
+# DLT pipeline state + stedding root (do NOT commit — runtime caches)
+stedding/
+# Explicit exclusions for known stedding subtrees (defence-in-depth)
+!stedding/.gitkeep
 
 # OSINT allowlist is NOT in .gitignore (it's the canonical licence surface)
 

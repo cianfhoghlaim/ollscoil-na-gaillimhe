@@ -50,8 +50,8 @@
 ## 8. Validation
 
 - [x] Run `python3 scripts/smoke_test.py` — pass
-- [ ] Run `openspec validate kcg-university-of-galway-doc-processing-v1 --strict` — TODO
-- [ ] Run `python3 -c "import ast; ast.parse(open('notebooks/uog_doc_processing_pipeline.py').read())"` — TODO
+- [x] Run `openspec validate kcg-university-of-galway-doc-processing-v1 --strict` — verified 2026-09-13
+- [x] Run `python3 -c "import ast; ast.parse(open('notebooks/uog_doc_processing_pipeline.py').read())"` — verified 2026-09-13
 
 ## Verification
 
